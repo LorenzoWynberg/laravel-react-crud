@@ -6,23 +6,49 @@ class PostIndex extends Component {
 		super(props)
 
 		this.state = {
-			posts: []
+			posts: [],
+			categories: [],
+			query: {
+				page: 1,
+				category_id: ''
+			}
 		}
+
+		this.categoryChanged = this.categoryChanged.bind(this);
+		this.pageChanged = this.pageChanged.bind(this);
 	}
 
 	fetchPosts(page = 1) {
-		axios.get('/api/posts', { params: { page } })
+		axios.get('/api/posts', { params: this.state.query })
 			.then(res => this.setState({ posts: res.data }))
+	}
+
+	fetchCategories() {
+		axios.get('/api/categories')
+			.then(res => this.setState({ categories: res.data.data }))
 	}
 
 	pageChanged(url) {
 		const fullUrl = new URL(url)
-		const page = fullUrl.searchParams.get('page')
-		this.fetchPosts(page)
+		this.setState(({
+			query: {
+				page: fullUrl.searchParams.get('page')
+			}
+		}), () => this.fetchPosts())
+	}
+
+	categoryChanged(event) {
+		this.setState(({
+			query: {
+				category_id: event.target.value,
+				page: 1
+			}
+		}), () => this.fetchPosts())
 	}
 
 	componentDidMount() {
 		this.fetchPosts()
+		this.fetchCategories()
 	}
 
 	renderHead() {
@@ -56,7 +82,7 @@ class PostIndex extends Component {
 					post => <tr key={post.id}>
 						<td>{post.id}</td>
 						<td>{post.title}</td>
-						<td>{post.category}</td>
+						<td>{post.category.name}</td>
 						<td>{post.content}</td>
 						<td>{post.created_at}</td>
 					</tr>
@@ -103,11 +129,29 @@ class PostIndex extends Component {
 		);
 	}
 
+	renderCategoryFilter() {
+		const categories = this.state.categories.map(category =>
+			<option key={category.id} value={category.id}>{category.name}</option>
+		);
+
+		return (
+			<select
+				onChange={this.categoryChanged}
+				className="mt-1 w-full sm:mt-0 sm:w-1/4 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+				<option>-- all categories --</option>
+				{categories}
+			</select>
+		)
+	}
+
 	render() {
 		if (!('data' in this.state.posts)) return;
 		return (
 			<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
 				<div className="min-w-full align-middle">
+					<div className="mb-4">
+						{this.renderCategoryFilter()}
+					</div>
 					<table className="table">
 						{this.renderHead()}
 						{this.renderBody()}

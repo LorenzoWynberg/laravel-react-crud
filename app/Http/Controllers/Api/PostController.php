@@ -12,11 +12,18 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PostResource::collection(Post::with('category')->paginate(10));
+        $posts = Post::with('category')
+            ->when($request->filled('category_id'), function ($query) use ($request) {
+                $query->where('category_id', $request->category_id);
+            })
+            ->paginate(10);
+
+        return PostResource::collection($posts);
     }
 
     /**
