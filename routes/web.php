@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'welcome')->name('dashboard');
+Route::view('/', 'dashboard')->name('dashboard');
 
 require __DIR__ . '/auth.php';
