@@ -36,6 +36,9 @@ class PostIndex extends Component {
 						<span>Title</span>
 					</th>
 					<th>
+						<span>Category</span>
+					</th>
+					<th>
 						<span>Content</span>
 					</th>
 					<th>
@@ -53,6 +56,7 @@ class PostIndex extends Component {
 					post => <tr key={post.id}>
 						<td>{post.id}</td>
 						<td>{post.title}</td>
+						<td>{post.category}</td>
 						<td>{post.content}</td>
 						<td>{post.created_at}</td>
 					</tr>
