@@ -1,7 +1,9 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
+import { render } from 'react-dom';
+import PostIndex from './Pages/Posts';
 
-window.Alpine = Alpine;
-
-Alpine.start();
+render(
+    <PostIndex />,
+    document.getElementById('app')
+)
