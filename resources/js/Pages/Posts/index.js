@@ -12,7 +12,7 @@ class PostIndex extends Component {
 
 	fetchPosts() {
 		axios.get('/api/posts')
-			.then(res => this.setState({ posts: res.data }))
+			.then(res => this.setState({ posts: res.data.data }))
 	}
 
 	componentDidMount() {
