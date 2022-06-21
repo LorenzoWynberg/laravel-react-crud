@@ -10,15 +10,19 @@ class PostIndex extends Component {
 			categories: [],
 			query: {
 				page: 1,
-				category_id: ''
+				category_id: '',
+				order_column: 'id',
+				order_direction: 'desc',
 			}
 		}
 
 		this.categoryChanged = this.categoryChanged.bind(this);
 		this.pageChanged = this.pageChanged.bind(this);
+		this.orderByChanged = this.orderByChanged.bind(this);
 	}
 
-	fetchPosts(page = 1) {
+	fetchPosts() {
+		console.log(this.state.query);
 		axios.get('/api/posts', { params: this.state.query })
 			.then(res => this.setState({ posts: res.data }))
 	}
@@ -46,6 +50,34 @@ class PostIndex extends Component {
 		}), () => this.fetchPosts())
 	}
 
+	orderByColumnIcon(column) {
+		let icon = 'fa-sort';
+		if (this.state.query.order_column === column) {
+			icon = this.state.query.order_direction === 'asc' ?
+				icon = 'fa-sort-up' :
+				icon = 'fa-sort-down'
+		}
+		return (
+			<i className={`fa-solid ${icon}`}></i>
+		)
+	}
+
+	orderByChanged(column) {
+		let direction = 'asc';
+		if (column === this.state.query.order_column) {
+			direction = this.state.query.order_direction === 'asc' ?
+				'desc' :
+				'asc'
+		}
+		this.setState(({
+			query: {
+				page: 1,
+				order_column: column,
+				order_direction: direction
+			}
+		}), () => this.fetchPosts())
+	}
+
 	componentDidMount() {
 		this.fetchPosts()
 		this.fetchCategories()
@@ -56,19 +88,38 @@ class PostIndex extends Component {
 			<thead className="table-header">
 				<tr>
 					<th>
-						<span>ID</span>
+						<div>
+							<span>ID</span>
+							<button onClick={() => this.orderByChanged('id')} type="button" className="column-sort">
+								{this.orderByColumnIcon('id')}
+							</button>
+						</div>
 					</th>
 					<th>
-						<span>Title</span>
+						<div>
+							<span>Title</span>
+							<button onClick={() => this.orderByChanged('title')} type="button" className="column-sort">
+								{this.orderByColumnIcon('title')}
+							</button>
+						</div>
 					</th>
 					<th>
-						<span>Category</span>
+						<div>
+							<span>Category</span>
+							<button onClick={() => this.orderByChanged('category_id')} type="button" className="column-sort">
+								{this.orderByColumnIcon('category_id')}
+							</button>
+						</div>
 					</th>
 					<th>
-						<span>Content</span>
+						<div>
+							<span>Content</span>
+						</div>
 					</th>
 					<th>
-						<span>Created at</span>
+						<div>
+							<span>Created at</span>
+						</div>
 					</th>
 				</tr>
 			</thead>
