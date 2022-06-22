@@ -1,5 +1,5 @@
-import axios from "axios"
 import { Component } from "react"
+import MainLayout from "@layouts/MainLayout/MainLayout"
 
 class PostIndex extends Component {
 	constructor(props) {
@@ -18,13 +18,13 @@ class PostIndex extends Component {
 	}
 
 	fetchPosts() {
-		axios
+		window.axios
 			.get("/api/posts", { params: this.state.query })
 			.then(res => this.setState({ posts: res.data }))
 	}
 
 	fetchCategories() {
-		axios
+		window.axios
 			.get("/api/categories")
 			.then(res => this.setState({ categories: res.data.data }))
 	}
@@ -227,16 +227,18 @@ class PostIndex extends Component {
 	render() {
 		if (!("data" in this.state.posts)) return;
 		return (
-			<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
-				<div className="min-w-full align-middle">
-					<div className="mb-4">{this.renderCategoryFilter()}</div>
-					<table className="table">
-						{this.renderHead()}
-						{this.renderBody()}
-					</table>
-					<div className="mt-4">{this.renderPaginator()}</div>
+			<MainLayout title={"Post Index"}>
+				<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
+					<div className="min-w-full align-middle">
+						<div className="mb-4">{this.renderCategoryFilter()}</div>
+						<table className="table">
+							{this.renderHead()}
+							{this.renderBody()}
+						</table>
+						<div className="mt-4">{this.renderPaginator()}</div>
+					</div>
 				</div>
-			</div>
+			</MainLayout>
 		);
 	}
 }

@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const webpackConfig = require('./webpack.config.js');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,9 +12,11 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .react()
-    .postCss('resources/css/app.css', 'public/css', [
-        require('tailwindcss'),
-        require('autoprefixer'),
-    ]);
+mix.js('resources/js/index.js', 'public/js')
+	.react()
+	.postCss('resources/css/app.css', 'public/css', [
+		require('tailwindcss'),
+		require('autoprefixer'),
+	])
+	.sourceMaps()
+	.webpackConfig(webpackConfig);
