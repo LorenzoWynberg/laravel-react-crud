@@ -1,9 +1,9 @@
-import axios from "axios";
-import { Component } from "react";
+import axios from "axios"
+import { Component } from "react"
 
 class PostIndex extends Component {
 	constructor(props) {
-		super(props);
+		super(props)
 
 		this.state = {
 			posts: [],
@@ -14,33 +14,30 @@ class PostIndex extends Component {
 				order_column: "id",
 				order_direction: "desc",
 			},
-		};
+		}
 	}
 
 	fetchPosts() {
 		axios
 			.get("/api/posts", { params: this.state.query })
-			.then(res => this.setState({ posts: res.data }));
+			.then(res => this.setState({ posts: res.data }))
 	}
 
 	fetchCategories() {
 		axios
 			.get("/api/categories")
-			.then(res => this.setState({ categories: res.data.data }));
+			.then(res => this.setState({ categories: res.data.data }))
 	}
 
 	categoryChanged = (event) => {
-		this.setState(
-			{
-				query: {
-					category_id: event.target.value,
-					page: 1,
-					order_column: state.query.order_column,
-					order_direction: state.query.order_direction,
-				},
+		this.setState((state) => ({
+			query: {
+				category_id: event.target.value,
+				page: 1,
+				order_column: state.query.order_column,
+				order_direction: state.query.order_direction,
 			},
-			() => this.fetchPosts()
-		);
+		}), () => this.fetchPosts())
 	};
 
 	pageChanged = (url) => {
@@ -52,8 +49,8 @@ class PostIndex extends Component {
 				order_column: state.query.order_column,
 				order_direction: state.query.order_direction,
 			},
-		}), () => this.fetchPosts());
-	};
+		}), () => this.fetchPosts())
+	}
 
 	orderByChanged = (column) => {
 		let direction = "asc";
@@ -67,12 +64,12 @@ class PostIndex extends Component {
 				order_direction: direction,
 				category_id: state.query.category_id,
 			},
-		}), () => this.fetchPosts());
-	};
+		}), () => this.fetchPosts())
+	}
 
 	componentDidMount() {
-		this.fetchPosts();
-		this.fetchCategories();
+		this.fetchPosts()
+		this.fetchCategories()
 	}
 
 	renderHead() {
@@ -149,20 +146,28 @@ class PostIndex extends Component {
 			icon =
 				this.state.query.order_direction === "asc"
 					? (icon = "fa-sort-up")
-					: (icon = "fa-sort-down");
+					: (icon = "fa-sort-down")
 		}
 		return <i className={`fa-solid ${icon}`}></i>;
 	}
 
 	renderPaginatorLinks() {
-		return this.state.posts.meta.links.map((link, index) => (
+		let links = this.state.posts.meta.links
+		let buttons = links.map((link, index) => (
 			<button
 				key={index}
 				onClick={() => this.pageChanged(link.url)}
 				dangerouslySetInnerHTML={{ __html: link.label }}
-				className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md"
+				disabled={link.url ? false : true}
+				className={
+					(link.url
+						? "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 "
+						: "cursor-not-allowed focus:outline-none ")
+					+
+					"relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md disabled:opacity-75"}
 			/>
-		));
+		))
+		return buttons
 	}
 
 	renderPaginator() {
@@ -177,16 +182,16 @@ class PostIndex extends Component {
 							Showing
 							<span>
 								<span className="font-medium">
-									{this.state.posts.meta.from}
+									{" "}{this.state.posts.meta.from}{" "}
 								</span>
 								to
 								<span className="font-medium">
-									{this.state.posts.meta.to}
+									{" "}{this.state.posts.meta.to}{" "}
 								</span>
 							</span>
 							of
 							<span className="font-medium">
-								{this.state.posts.meta.total}
+								{" "}{this.state.posts.meta.total}{" "}
 							</span>
 							results
 						</p>
