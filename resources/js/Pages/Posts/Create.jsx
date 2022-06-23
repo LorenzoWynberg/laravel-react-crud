@@ -1,5 +1,6 @@
 import { Component } from "react";
 import MainLayout from "@layouts/MainLayout/MainLayout"
+import CategorySelect from "@components/FormFields/CategorySelect";
 
 class PostCreate extends Component {
 	constructor(props) {
@@ -45,9 +46,7 @@ class PostCreate extends Component {
 						<label htmlFor="category" className={labelClassList}>
 							Category
 						</label>
-						<select value={this.state.category_id} onChange={this.handleInputChange} id="category_id" className={inputClassList}>
-							<option value="">-- Select category --</option>
-						</select>
+						<CategorySelect callback={this.handleInputChange} />
 					</div>
 					<div className="mt-4">
 						<button type="submit" className="px-3 py-2 bg-blue-600 text-white rounded">

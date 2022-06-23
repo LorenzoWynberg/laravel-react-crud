@@ -1,5 +1,6 @@
 import { Component } from "react"
 import MainLayout from "@layouts/MainLayout/MainLayout"
+import CategorySelect from "@components/FormFields/CategorySelect";
 
 class PostIndex extends Component {
 	constructor(props) {
@@ -7,7 +8,6 @@ class PostIndex extends Component {
 
 		this.state = {
 			posts: [],
-			categories: [],
 			query: {
 				page: 1,
 				category_id: "",
@@ -21,12 +21,6 @@ class PostIndex extends Component {
 		window.axios
 			.get("/api/posts", { params: this.state.query })
 			.then(res => this.setState({ posts: res.data }))
-	}
-
-	fetchCategories() {
-		window.axios
-			.get("/api/categories")
-			.then(res => this.setState({ categories: res.data.data }))
 	}
 
 	categoryChanged = (event) => {
@@ -69,7 +63,6 @@ class PostIndex extends Component {
 
 	componentDidMount() {
 		this.fetchPosts()
-		this.fetchCategories()
 	}
 
 	renderHead() {
@@ -179,7 +172,7 @@ class PostIndex extends Component {
 				<div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
 					<div>
 						<p className="text-sm text-gray-700 leading-5">
-							Showing
+							Showing results
 							<span>
 								<span className="font-medium">
 									{" "}{this.state.posts.meta.from}{" "}
@@ -191,9 +184,8 @@ class PostIndex extends Component {
 							</span>
 							of
 							<span className="font-medium">
-								{" "}{this.state.posts.meta.total}{" "}
+								{" "}{this.state.posts.meta.total}
 							</span>
-							results
 						</p>
 					</div>
 
@@ -207,35 +199,20 @@ class PostIndex extends Component {
 		);
 	}
 
-	renderCategoryFilter() {
-		const categories = this.state.categories.map((category) => (
-			<option key={category.id} value={category.id}>
-				{category.name}
-			</option>
-		));
-
-		return (
-			<select
-				onChange={this.categoryChanged}
-				className="mt-1 w-full sm:mt-0 sm:w-1/4 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-				<option value="">-- all categories --</option>
-				{categories}
-			</select>
-		);
-	}
-
 	render() {
 		if (!("data" in this.state.posts)) return;
 		return (
 			<MainLayout title={"Post Index"}>
 				<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
 					<div className="min-w-full align-middle">
-						<div className="mb-4">{this.renderCategoryFilter()}</div>
 						<table className="table">
+							<div className="mb-4">
+								<CategorySelect callback={this.categoryChanged} />
+							</div>
 							{this.renderHead()}
 							{this.renderBody()}
+							<div className="mt-4">{this.renderPaginator()}</div>
 						</table>
-						<div className="mt-4">{this.renderPaginator()}</div>
 					</div>
 				</div>
 			</MainLayout>
