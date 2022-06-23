@@ -205,14 +205,14 @@ class PostIndex extends Component {
 			<MainLayout title={"Post Index"}>
 				<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
 					<div className="min-w-full align-middle">
+						<div className="mb-4">
+							<CategorySelect callback={this.categoryChanged} />
+						</div>
 						<table className="table">
-							<div className="mb-4">
-								<CategorySelect callback={this.categoryChanged} />
-							</div>
 							{this.renderHead()}
 							{this.renderBody()}
-							<div className="mt-4">{this.renderPaginator()}</div>
 						</table>
+						<div className="mt-4">{this.renderPaginator()}</div>
 					</div>
 				</div>
 			</MainLayout>
