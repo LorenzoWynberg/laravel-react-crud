@@ -4,15 +4,15 @@ import {
 	Routes,
 	Route,
 } from "react-router-dom";
-import PostsIndex from "@pages/Posts";
-import PostsCreate from "@pages/Posts/Create";
+import PostIndex from "@pages/Posts";
+import PostCreate from "@pages/Posts/Create";
 
 function Main() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<PostsIndex />}></Route>
-				<Route path="/posts/create" element={<PostsCreate />}></Route>
+				<Route path="/" element={<PostIndex />}></Route>
+				<Route path="/posts/create" element={<PostCreate />}></Route>
 			</Routes>
 		</BrowserRouter>
 	);
