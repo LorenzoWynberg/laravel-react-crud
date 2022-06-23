@@ -1,4 +1,5 @@
 import { Component } from "react"
+import CategoryService from "@services/CategoryService";
 
 class CategorySelect extends Component {
 
@@ -10,8 +11,8 @@ class CategorySelect extends Component {
 	}
 
 	fetchCategories() {
-		window.axios
-			.get("/api/categories")
+		CategoryService
+			.getAll()
 			.then(res => this.setState({ categories: res.data.data }))
 	}
 

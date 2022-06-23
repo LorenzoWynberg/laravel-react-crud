@@ -10,6 +10,7 @@ module.exports = {
 			'@layouts': path.resolve(__dirname, 'resources/js/layouts'),
 			'@pages': path.resolve(__dirname, 'resources/js/pages'),
 			'@components': path.resolve(__dirname, 'resources/js/components'),
+			'@services': path.resolve(__dirname, 'resources/js/services'),
 		}
 	}
 }
