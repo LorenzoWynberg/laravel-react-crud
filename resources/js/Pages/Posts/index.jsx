@@ -23,40 +23,19 @@ class PostIndex extends Component {
 			.then(res => this.setState({ posts: res.data }))
 	}
 
-	categoryChanged = (event) => {
-		this.setState((state) => ({
-			query: {
-				category_id: event.target.value,
-				page: 1,
-				order_column: state.query.order_column,
-				order_direction: state.query.order_direction,
-			},
-		}), () => this.fetchPosts())
-	};
-
-	pageChanged = (url) => {
-		const page = new URL(url).searchParams.get('page');
-		this.setState((state) => ({
-			query: {
-				category_id: state.query.category_id,
-				page: page,
-				order_column: state.query.order_column,
-				order_direction: state.query.order_direction,
-			},
-		}), () => this.fetchPosts())
-	}
-
-	orderByChanged = (column) => {
+	queryChanged = (e, params) => {
 		let direction = "asc";
-		if (column === this.state.query.order_column) {
-			direction = this.state.query.order_direction === "asc" ? "desc" : "asc";
+		if (params.hasOwnProperty('column')) {
+			if (params.column === this.state.query.order_column) {
+				direction = this.state.query.order_direction === "asc" ? "desc" : "asc";
+			}
 		}
 		this.setState((state) => ({
 			query: {
-				page: 1,
-				order_column: column,
-				order_direction: direction,
-				category_id: state.query.category_id,
+				page: params.hasOwnProperty('url') === true ? new URL(params.url).searchParams.get('page') : 1,
+				order_column: params.hasOwnProperty('column') === true ? params.column : state.query.order_column,
+				order_direction: params.hasOwnProperty('column') === true ? direction : state.query.order_direction,
+				category_id: params.hasOwnProperty('category_id') === true ? e.target.value : state.query.category_id,
 			},
 		}), () => this.fetchPosts())
 	}
@@ -73,7 +52,7 @@ class PostIndex extends Component {
 						<div>
 							<span>ID</span>
 							<button
-								onClick={() => this.orderByChanged("id")}
+								onClick={(e) => this.queryChanged(e, { column: "id" })}
 								type="button"
 								className="column-sort">
 								{this.renderSortIcon("id")}
@@ -84,7 +63,7 @@ class PostIndex extends Component {
 						<div>
 							<span>Title</span>
 							<button
-								onClick={() => this.orderByChanged("title")}
+								onClick={(e) => this.queryChanged(e, { column: "title" })}
 								type="button"
 								className="column-sort">
 								{this.renderSortIcon("title")}
@@ -95,7 +74,7 @@ class PostIndex extends Component {
 						<div>
 							<span>Category</span>
 							<button
-								onClick={() => this.orderByChanged("category_id")}
+								onClick={(e) => this.queryChanged(e, { column: "category_id" })}
 								type="button"
 								className="column-sort">
 								{this.renderSortIcon("category_id")}
@@ -149,15 +128,16 @@ class PostIndex extends Component {
 		let buttons = links.map((link, index) => (
 			<button
 				key={index}
-				onClick={() => this.pageChanged(link.url)}
+				onClick={(e) => this.queryChanged(e, { url: link.url })}
 				dangerouslySetInnerHTML={{ __html: link.label }}
 				disabled={link.url ? false : true}
 				className={
-					(link.url
-						? "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 "
-						: "cursor-not-allowed focus:outline-none ")
-					+
-					"relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md disabled:opacity-75"}
+					(
+						link.url
+							? "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 "
+							: "cursor-not-allowed focus:outline-none "
+					)
+					+ "relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md disabled:opacity-75"}
 			/>
 		))
 		return buttons
@@ -206,7 +186,7 @@ class PostIndex extends Component {
 				<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
 					<div className="min-w-full align-middle">
 						<div className="mb-4">
-							<CategorySelect callback={this.categoryChanged} />
+							<CategorySelect callback={(e) => this.queryChanged(e, { category_id: '' })} />
 						</div>
 						<table className="table">
 							{this.renderHead()}
