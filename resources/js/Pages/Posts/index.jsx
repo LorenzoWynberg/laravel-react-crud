@@ -1,7 +1,7 @@
 import { Component } from "react"
 import MainLayout from "@layouts/MainLayout/MainLayout"
 import CategorySelect from "@components/FormFields/CategorySelect";
-import SortableTable from "@components/Table/SortableTable";
+import SortableTable from "@components/Tables/SortableTable";
 
 class PostIndex extends Component {
 	constructor(props) {
