@@ -15,10 +15,10 @@
 		crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 	<!-- Styles -->
-	<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+	<link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
 	<!-- Scripts -->
-	<script src="{{ asset('js/index.js') }}" defer></script>
+	<script src="{{ mix('js/index.js') }}" defer></script>
 </head>
 
 <body class="font-sans antialiased">

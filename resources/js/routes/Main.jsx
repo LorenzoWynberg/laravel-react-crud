@@ -11,8 +11,8 @@ function Main() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<PostIndex />}></Route>
-				<Route path="/posts/create" element={<PostCreate />}></Route>
+				<Route path="/" element={<PostIndex />} />
+				<Route path="/posts/create" element={<PostCreate />} />
 			</Routes>
 		</BrowserRouter>
 	);
