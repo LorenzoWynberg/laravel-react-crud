@@ -1,6 +1,6 @@
 import { Component } from "react"
 
-function PaginatorButton({ link, callback }) {
+function PaginatorButton({ id, link, callback }) {
 	let isDisabled = !link.url || link.active;
 	return (
 		<button
@@ -8,18 +8,19 @@ function PaginatorButton({ link, callback }) {
 			dangerouslySetInnerHTML={{ __html: link.label }}
 			disabled={isDisabled}
 			className={
+				"relative active:outline-none inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 border-gray-200 bg-white border leading-5 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md disabled:opacity-75 "
+				+
 				(
 					isDisabled
-						? "cursor-not-allowed focus:outline-none "
-						: "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 hover:bg-gray-100 "
+						? "cursor-not-allowed"
+						: "focus:z-10 ring-gray-300 active:bg-indigo-100 hover:text-gray-500 hover:bg-indigo-50"
 				)
 				+
 				(
 					link.active
-						? "bg-gray-100 "
+						? " bg-indigo-100"
 						: ""
 				)
-				+ "relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md disabled:opacity-75"
 			}
 		/>
 	)
@@ -31,6 +32,7 @@ class Paginator extends Component {
 	}
 
 	render() {
+		console.log(this.props.data);
 		return (
 			<nav
 				role="navigation"
