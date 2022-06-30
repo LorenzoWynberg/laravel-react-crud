@@ -2,6 +2,7 @@ import { Component } from "react"
 import MainLayout from "@layouts/MainLayout/MainLayout"
 import CategorySelect from "@components/FormFields/CategorySelect";
 import SortableTable from "@components/Tables/SortableTable";
+import Paginator from "@components/Paginator/Paginator";
 
 class PostIndex extends Component {
 	constructor(props) {
@@ -60,62 +61,6 @@ class PostIndex extends Component {
 		this.fetchPosts()
 	}
 
-	renderPaginatorLinks() {
-		let links = this.state.posts.meta.links
-		let buttons = links.map((link, index) => (
-			<button
-				key={index}
-				onClick={(e) => this.queryChanged(e, { url: link.url })}
-				dangerouslySetInnerHTML={{ __html: link.label }}
-				disabled={link.url ? false : true}
-				className={
-					(
-						link.url
-							? "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 "
-							: "cursor-not-allowed focus:outline-none "
-					)
-					+ "relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md disabled:opacity-75"}
-			/>
-		))
-		return buttons
-	}
-
-	renderPaginator() {
-		return (
-			<nav
-				role="navigation"
-				aria-label="Pagination Navigation"
-				className="flex items-center justify-between">
-				<div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-					<div>
-						<p className="text-sm text-gray-700 leading-5">
-							Showing results
-							<span>
-								<span className="font-medium">
-									{" "}{this.state.posts.meta.from}{" "}
-								</span>
-								to
-								<span className="font-medium">
-									{" "}{this.state.posts.meta.to}{" "}
-								</span>
-							</span>
-							of
-							<span className="font-medium">
-								{" "}{this.state.posts.meta.total}
-							</span>
-						</p>
-					</div>
-
-					<div>
-						<span className="relative z-0 inline-flex shadow-sm rounded-md">
-							{this.renderPaginatorLinks()}
-						</span>
-					</div>
-				</div>
-			</nav>
-		);
-	}
-
 	render() {
 		if (!("data" in this.state.posts)) return;
 		return (
@@ -132,7 +77,7 @@ class PostIndex extends Component {
 							sort_column={this.state.query.sort_column}
 							sort_direction={this.state.query.sort_direction} />
 						<div className="mt-4">
-							{this.renderPaginator()}
+							<Paginator data={this.state.posts} callback={this.queryChanged} />
 						</div>
 					</div>
 				</div>
