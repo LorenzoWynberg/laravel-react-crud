@@ -6,12 +6,12 @@ function PaginatorButton({ link, callback }) {
 		<button
 			onClick={(e) => callback(e, { url: link.url })}
 			dangerouslySetInnerHTML={{ __html: link.label }}
-			disabled={isDisabled ? true : false}
+			disabled={isDisabled}
 			className={
 				(
 					isDisabled
 						? "cursor-not-allowed focus:outline-none "
-						: "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 active:bg-gray-200 active:text-gray-700 "
+						: "focus:z-10 focus:outline-none focus:ring hover:text-gray-500 ring-gray-300 focus:border-blue-300 hover:bg-gray-100 "
 				)
 				+
 				(
