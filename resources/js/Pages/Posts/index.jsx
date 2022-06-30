@@ -1,6 +1,7 @@
 import { Component } from "react"
 import MainLayout from "@layouts/MainLayout/MainLayout"
 import CategorySelect from "@components/FormFields/CategorySelect";
+import SortableTable from "@components/Table/SortableTable";
 
 class PostIndex extends Component {
 	constructor(props) {
@@ -11,10 +12,20 @@ class PostIndex extends Component {
 			query: {
 				page: 1,
 				category_id: "",
-				order_column: "id",
-				order_direction: "desc",
+				sort_column: "id",
+				sort_direction: "desc",
 			},
 		}
+	}
+
+	getColumns() {
+		return [
+			{ name: 'ID', id: 'id', sortable: true },
+			{ name: 'Title', id: 'title', sortable: true },
+			{ name: 'Category', id: 'category_id', sortable: true },
+			{ name: 'Content', id: 'content', sortable: false },
+			{ name: 'Created At', id: 'created_at', sortable: false },
+		]
 	}
 
 	fetchPosts() {
@@ -23,104 +34,30 @@ class PostIndex extends Component {
 			.then(res => this.setState({ posts: res.data }))
 	}
 
-	queryChanged = (e, params) => {
+	directionHandler(column) {
 		let direction = "asc";
-		if (params.hasOwnProperty('column')) {
-			if (params.column === this.state.query.order_column) {
-				direction = this.state.query.order_direction === "asc" ? "desc" : "asc";
-			}
+		if (column === this.state.query.sort_column) {
+			direction =
+				this.state.query.sort_direction === direction
+					? "desc"
+					: "asc";
 		}
+		return direction
+	}
+
+	queryChanged = (e, params = {}) => {
 		this.setState((state) => ({
 			query: {
-				page: params.hasOwnProperty('url') === true ? new URL(params.url).searchParams.get('page') : 1,
-				order_column: params.hasOwnProperty('column') === true ? params.column : state.query.order_column,
-				order_direction: params.hasOwnProperty('column') === true ? direction : state.query.order_direction,
-				category_id: params.hasOwnProperty('category_id') === true ? e.target.value : state.query.category_id,
+				page: params.hasOwnProperty('url') ? parseInt(new URL(params.url).searchParams.get('page')) : 1,
+				category_id: e.target.name === 'categorySelect' ? e.target.value : state.query.category_id,
+				sort_column: params.hasOwnProperty('column') ? params.column : state.query.sort_column,
+				sort_direction: params.hasOwnProperty('column') ? this.directionHandler(params.column) : state.query.sort_direction,
 			},
 		}), () => this.fetchPosts())
 	}
 
 	componentDidMount() {
 		this.fetchPosts()
-	}
-
-	renderHead() {
-		return (
-			<thead className="table-header">
-				<tr>
-					<th>
-						<div>
-							<span>ID</span>
-							<button
-								onClick={(e) => this.queryChanged(e, { column: "id" })}
-								type="button"
-								className="column-sort">
-								{this.renderSortIcon("id")}
-							</button>
-						</div>
-					</th>
-					<th>
-						<div>
-							<span>Title</span>
-							<button
-								onClick={(e) => this.queryChanged(e, { column: "title" })}
-								type="button"
-								className="column-sort">
-								{this.renderSortIcon("title")}
-							</button>
-						</div>
-					</th>
-					<th>
-						<div>
-							<span>Category</span>
-							<button
-								onClick={(e) => this.queryChanged(e, { column: "category_id" })}
-								type="button"
-								className="column-sort">
-								{this.renderSortIcon("category_id")}
-							</button>
-						</div>
-					</th>
-					<th>
-						<div>
-							<span>Content</span>
-						</div>
-					</th>
-					<th>
-						<div>
-							<span>Created at</span>
-						</div>
-					</th>
-				</tr>
-			</thead>
-		);
-	}
-
-	renderBody() {
-		return (
-			<tbody className="table-body">
-				{this.state.posts.data.map((post) => (
-					<tr key={post.id}>
-						<td>{post.id}</td>
-						<td>{post.title}</td>
-						<td>{post.category.name}</td>
-						<td>{post.content}</td>
-						<td>{post.created_at}</td>
-					</tr>
-				))}
-			</tbody>
-		);
-	}
-
-	renderSortIcon(column) {
-		let icon = "fa-sort";
-		if (this.state.query.order_column === column) {
-			icon =
-				this.state.query.order_direction === "asc"
-					? (icon = "fa-sort-up")
-					: (icon = "fa-sort-down")
-		}
-		return <i className={`fa-solid ${icon}`}></i>;
 	}
 
 	renderPaginatorLinks() {
@@ -186,13 +123,17 @@ class PostIndex extends Component {
 				<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
 					<div className="min-w-full align-middle">
 						<div className="mb-4">
-							<CategorySelect callback={(e) => this.queryChanged(e, { category_id: '' })} />
+							<CategorySelect callback={this.queryChanged} />
 						</div>
-						<table className="table">
-							{this.renderHead()}
-							{this.renderBody()}
-						</table>
-						<div className="mt-4">{this.renderPaginator()}</div>
+						<SortableTable
+							cb={this.queryChanged}
+							cols={this.getColumns()}
+							rows={this.state.posts.data}
+							sort_column={this.state.query.sort_column}
+							sort_direction={this.state.query.sort_direction} />
+						<div className="mt-4">
+							{this.renderPaginator()}
+						</div>
 					</div>
 				</div>
 			</MainLayout>
