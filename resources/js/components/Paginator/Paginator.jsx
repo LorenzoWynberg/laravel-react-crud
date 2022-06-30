@@ -13,12 +13,12 @@ function PaginatorButton({ id, link, callback }) {
 				(
 					isDisabled
 						? "cursor-not-allowed"
-						: "focus:z-10 ring-gray-300 active:bg-indigo-100 hover:text-gray-500 hover:bg-indigo-50"
+						: "focus:z-10 ring-gray-300 active:bg-gray-100 hover:text-gray-500 hover:bg-gray-50"
 				)
 				+
 				(
 					link.active
-						? " bg-indigo-100"
+						? " bg-gray-100"
 						: ""
 				)
 			}
