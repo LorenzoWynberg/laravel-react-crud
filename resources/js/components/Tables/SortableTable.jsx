@@ -17,7 +17,7 @@ function SortButton({ col, sort_column, sort_direction, cb }) {
 		<button
 			onClick={(e) => cb(e, { column: col.id })}
 			type="button"
-			className="column-sort">
+			className="column-sort ml-3">
 			<SortIcon col={col} sort_column={sort_column} sort_direction={sort_direction} />
 		</button>
 	)
@@ -25,11 +25,11 @@ function SortButton({ col, sort_column, sort_direction, cb }) {
 
 function TableHead({ cols, sort_column, sort_direction, cb }) {
 	return (
-		<thead className="table-header">
+		<thead className="">
 			<tr>
 				{cols.map((col) => {
 					return (
-						<th key={col.id}>
+						<th className="text-left py-4 px-6 text-white bg-indigo-400" key={col.id}>
 							<div>
 								<span>{col.name}</span>
 								<SortButton col={col} cb={cb} sort_column={sort_column} sort_direction={sort_direction} />
