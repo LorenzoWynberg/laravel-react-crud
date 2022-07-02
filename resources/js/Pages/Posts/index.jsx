@@ -50,7 +50,7 @@ class PostIndex extends Component {
 		this.setState((state) => ({
 			query: {
 				page: params.hasOwnProperty('url') ? parseInt(new URL(params.url).searchParams.get('page')) : 1,
-				category_id: e.target.name === 'categorySelect' ? e.target.value : state.query.category_id,
+				category_id: e.target.name === 'category_id' ? e.target.value : state.query.category_id,
 				sort_column: params.hasOwnProperty('column') ? params.column : state.query.sort_column,
 				sort_direction: params.hasOwnProperty('column') ? this.directionHandler(params.column) : state.query.sort_direction,
 			},
