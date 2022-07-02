@@ -45,7 +45,13 @@ class PostController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		//
+		$post = Post::create([
+			'title' => $request->title,
+			'content' => $request->content,
+			'category_id' => $request->category_id,
+		]);
+
+		return new PostResource($post);
 	}
 
 	/**
