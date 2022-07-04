@@ -1,41 +1,29 @@
-import { Component } from "react"
+import { useState, useEffect } from "react";
 import CategoryService from "@services/CategoryService";
 
-class CategorySelect extends Component {
+function CategorySelect({ callback }) {
+	const [categories, setCategories] = useState([])
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			categories: []
-		};
-	}
-
-	fetchCategories() {
+	const fetchCategories = () => {
 		CategoryService
 			.getAll()
-			.then(res => this.setState({ categories: res.data.data }))
+			.then(res => setCategories(res.data.data))
 	}
 
-	componentDidMount() {
-		this.fetchCategories()
-	}
+	useEffect(fetchCategories, [])
 
-	render() {
-		const categories = this.state.categories.map((category) => (
-			<option key={category.id} value={category.id}>
-				{category.name}
-			</option>
-		))
-
-		return (
-			<select
-				name="category_id"
-				onChange={this.props.callback}
-				className="mt-1 w-full sm:mt-0 sm:w-1/4 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-				<option value="">-- All Categories --</option>
-				{categories}
-			</select>
-		)
-	}
+	return (
+		<select
+			name="category_id"
+			onChange={callback}
+			className="mt-1 w-full sm:mt-0 sm:w-1/4 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+			<option value="">-- All Categories --</option>
+			{categories.map((category) => (
+				<option key={category.id} value={category.id}>
+					{category.name}
+				</option>
+			))}
+		</select>
+	)
 }
 export default CategorySelect

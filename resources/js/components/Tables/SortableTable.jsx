@@ -1,5 +1,3 @@
-import { Component } from "react"
-
 function SortIcon({ col, sort_column, sort_direction }) {
 	let icon = "fa-sort";
 	if (sort_column === col.id) {
@@ -11,11 +9,13 @@ function SortIcon({ col, sort_column, sort_direction }) {
 	return <i className={`fa-solid ${icon}`}></i>;
 }
 
-function SortButton({ col, sort_column, sort_direction, cb }) {
+function SortButton({ col, sort_column, sort_direction, callback }) {
 	if (!col.sortable) return;
 	return (
 		<button
-			onClick={(e) => cb(e, { column: col.id })}
+			name="col_sort"
+			value={col.id}
+			onClick={callback}
 			type="button"
 			className="column-sort ml-3">
 			<SortIcon col={col} sort_column={sort_column} sort_direction={sort_direction} />
@@ -23,7 +23,7 @@ function SortButton({ col, sort_column, sort_direction, cb }) {
 	)
 }
 
-function TableHead({ cols, sort_column, sort_direction, cb }) {
+function TableHead({ cols, sort_column, sort_direction, callback }) {
 	return (
 		<thead className="">
 			<tr>
@@ -32,7 +32,7 @@ function TableHead({ cols, sort_column, sort_direction, cb }) {
 						<th className="text-left py-4 px-6 text-white bg-indigo-400" key={col.id}>
 							<div>
 								<span>{col.name}</span>
-								<SortButton col={col} cb={cb} sort_column={sort_column} sort_direction={sort_direction} />
+								<SortButton col={col} callback={callback} sort_column={sort_column} sort_direction={sort_direction} />
 							</div>
 						</th>
 					)
@@ -58,24 +58,17 @@ function TableBody({ rows }) {
 	);
 }
 
-class SortableTable extends Component {
-
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<table className="table">
-				<TableHead
-					sort_column={this.props.sort_column}
-					sort_direction={this.props.sort_direction}
-					cols={this.props.cols}
-					cb={this.props.cb} />
-				<TableBody rows={this.props.rows} />
-			</table>
-		)
-	}
+function SortableTable(props) {
+	return (
+		<table className="table">
+			<TableHead
+				sort_column={props.sort_column}
+				sort_direction={props.sort_direction}
+				cols={props.cols}
+				callback={props.callback} />
+			<TableBody rows={props.rows} />
+		</table>
+	)
 }
 
-export default SortableTable;
+export default SortableTable

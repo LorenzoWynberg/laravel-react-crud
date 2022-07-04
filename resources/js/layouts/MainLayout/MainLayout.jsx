@@ -1,4 +1,3 @@
-import React from "react";
 import MainNav from "@layouts/Nav/MainNav";
 import MainHeader from "@layouts/Nav/MainHeader";
 

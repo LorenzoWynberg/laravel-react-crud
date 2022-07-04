@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@layouts/MainLayout/MainLayout"
 import CategorySelect from "@components/FormFields/CategorySelect";
 
-const PostCreate = () => {
+function PostCreate() {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [categoryId, setCategoryId] = useState('');

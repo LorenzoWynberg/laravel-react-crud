@@ -1,25 +1,21 @@
-import { Component } from "react"
+import { useCallback, useEffect, useState } from "react";
 import MainLayout from "@layouts/MainLayout/MainLayout"
 import CategorySelect from "@components/FormFields/CategorySelect";
 import SortableTable from "@components/Tables/SortableTable";
 import Paginator from "@components/Paginator/Paginator";
 
-class PostIndex extends Component {
-	constructor(props) {
-		super(props)
-
-		this.state = {
-			posts: [],
-			query: {
-				page: 1,
-				category_id: "",
-				sort_column: "id",
-				sort_direction: "desc",
-			},
+function PostIndex() {
+	const [posts, setPosts] = useState([])
+	const [params, setParams] = useState(
+		{
+			page: 1,
+			category_id: "",
+			sort_column: "id",
+			sort_direction: "desc",
 		}
-	}
+	)
 
-	getColumns() {
+	const getColumns = () => {
 		return [
 			{ name: 'ID', id: 'id', sortable: true },
 			{ name: 'Title', id: 'title', sortable: true },
@@ -29,61 +25,56 @@ class PostIndex extends Component {
 		]
 	}
 
-	fetchPosts() {
+	const fetchPosts = () => {
 		window.axios
-			.get("/api/posts", { params: this.state.query })
-			.then(res => this.setState({ posts: res.data }))
+			.get("/api/posts", { params: params })
+			.then(res => setPosts(res.data))
 	}
 
-	directionHandler(column) {
+	const getDirection = (column) => {
 		let direction = "asc";
-		if (column === this.state.query.sort_column) {
+		if (column === params.sort_column) {
 			direction =
-				this.state.query.sort_direction === direction
+				params.sort_direction === direction
 					? "desc"
 					: "asc";
 		}
 		return direction
 	}
 
-	queryChanged = (e, params = {}) => {
-		this.setState((state) => ({
-			query: {
-				page: params.hasOwnProperty('url') ? parseInt(new URL(params.url).searchParams.get('page')) : 1,
-				category_id: e.target.name === 'category_id' ? e.target.value : state.query.category_id,
-				sort_column: params.hasOwnProperty('column') ? params.column : state.query.sort_column,
-				sort_direction: params.hasOwnProperty('column') ? this.directionHandler(params.column) : state.query.sort_direction,
-			},
-		}), () => this.fetchPosts())
-	}
+	const queryChanged = useCallback((e) => {
+		setParams({
+			page: e.target.name === 'paginator_link' ? parseInt(new URL(e.target.value).searchParams.get('page')) : 1,
+			category_id: e.target.name === 'category_id' ? e.target.value : params.category_id,
+			sort_column: e.currentTarget.name === 'col_sort' ? e.currentTarget.value : params.sort_column,
+			sort_direction: e.currentTarget.name === 'col_sort' ? getDirection(e.currentTarget.value) : params.sort_direction,
+		})
+	}, [params])
 
-	componentDidMount() {
-		this.fetchPosts()
-	}
+	useEffect(fetchPosts, [])
+	useEffect(fetchPosts, [params])
 
-	render() {
-		if (!("data" in this.state.posts)) return;
-		return (
-			<MainLayout title={"Post Index"}>
-				<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
-					<div className="min-w-full align-middle">
-						<div className="mb-4">
-							<CategorySelect callback={this.queryChanged} />
-						</div>
-						<SortableTable
-							cb={this.queryChanged}
-							cols={this.getColumns()}
-							rows={this.state.posts.data}
-							sort_column={this.state.query.sort_column}
-							sort_direction={this.state.query.sort_direction} />
-						<div className="mt-4">
-							<Paginator data={this.state.posts} callback={this.queryChanged} />
-						</div>
+	if (!("data" in posts)) return;
+	return (
+		<MainLayout title={"Post Index"}>
+			<div className="overflow-hidden overflow-x-auto p-6 bg-white border-gray-200">
+				<div className="min-w-full align-middle">
+					<div className="mb-4">
+						<CategorySelect callback={queryChanged} />
+					</div>
+					<SortableTable
+						callback={queryChanged}
+						cols={getColumns()}
+						rows={posts.data}
+						sort_column={params.sort_column}
+						sort_direction={params.sort_direction} />
+					<div className="mt-4">
+						<Paginator links={posts.meta.links} meta={posts.meta} callback={queryChanged} />
 					</div>
 				</div>
-			</MainLayout>
-		);
-	}
+			</div>
+		</MainLayout>
+	);
 }
 
 export default PostIndex;
