@@ -2,16 +2,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@layouts/MainLayout/MainLayout"
 import CategorySelect from "@components/FormFields/CategorySelect";
+import Spinner from "@components/Animations/Spinner";
 
 function PostCreate() {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [categoryId, setCategoryId] = useState('');
 	const [errors, setErrors] = useState({});
+	const [isLoading, setIsLoading] = useState(false)
 
 	const navigate = useNavigate()
 	const submit = (event) => {
 		event.preventDefault()
+		if (isLoading) return;
+		setErrors({})
+		setIsLoading(true)
+
 		window.axios
 			.post('/api/posts', {
 				title: title,
@@ -20,6 +26,7 @@ function PostCreate() {
 			})
 			.then(res => navigate('/'))
 			.catch(e => setErrors(e.response.data.errors))
+			.finally(() => setIsLoading(false))
 	}
 
 	const errorMessage = (field) => {
@@ -64,8 +71,12 @@ function PostCreate() {
 					{errorMessage('category_id')}
 				</div>
 				<div className="mt-4">
-					<button type="submit" className="px-3 py-2 bg-indigo-500 text-white rounded">
-						Save
+					<button
+						type="submit"
+						className="flex items-center px-3 py-2 bg-indigo-500 text-white rounded"
+						disabled={isLoading}>
+						<Spinner isLoading={isLoading} />
+						<span>Save</span>
 					</button>
 				</div>
 			</form>
