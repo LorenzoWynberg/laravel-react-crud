@@ -21,7 +21,7 @@ function PostIndex() {
 			{ name: 'Title', id: 'title', sortable: true },
 			{ name: 'Category', id: 'category_id', sortable: true },
 			{ name: 'Content', id: 'content', sortable: false },
-			{ name: 'Created At', id: 'created_at', sortable: false },
+			{ name: 'Created At', id: 'created_at', sortable: true },
 		]
 	}
 
